@@ -16,11 +16,12 @@ for message in consumer:
     print(dataset_forestfire)
     break
 
+
 #dataset_forestfire = pd.read_json('./forest_fire.json')
 dataset_forestfire.head()
 
-dataset_forestfire.month.replace(('jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'),(1,2,3,4,5,6,7,8,9,10,11,12), inplace=True)
-dataset_forestfire.day.replace(('mon','tue','wed','thu','fri','sat','sun'),(1,2,3,4,5,6,7), inplace=True)
+#dataset_forestfire.month.replace(('jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'),(1,2,3,4,5,6,7,8,9,10,11,12), inplace=True)
+#dataset_forestfire.day.replace(('mon','tue','wed','thu','fri','sat','sun'),(1,2,3,4,5,6,7), inplace=True)
 
 dataset_forestfire.describe()
 
@@ -33,8 +34,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.preprocessing import LabelEncoder
 
-dataset_forestfire.month.replace((1,2,3,4,5,6,7,8,9,10,11,12),('jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'), inplace=True)
-dataset_forestfire.day.replace((1,2,3,4,5,6,7),('mon','tue','wed','thu','fri','sat','sun'), inplace=True)
+#dataset_forestfire.month.replace((1,2,3,4,5,6,7,8,9,10,11,12),('jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'), inplace=True)
+#dataset_forestfire.day.replace((1,2,3,4,5,6,7),('mon','tue','wed','thu','fri','sat','sun'), inplace=True)
 dataset_forestfire.head(13)
 
 enc = LabelEncoder()
@@ -120,4 +121,84 @@ plt.yticks([i*5 for i in range(21)])
 plt.grid(linestyle='-', linewidth=2)
 plt.plot(range(tol_max),rec_SVR)
 
-print('Porcentagem de previsão correta\n',rec_SVR)
+
+##RandomForestRegressor
+
+'''from sklearn.ensemble import RandomForestRegressor
+param_grid = {'max_depth': [5,10,15,20,50], 'max_leaf_nodes': [2,5,10], 'min_samples_leaf': [2,5,10],
+             'min_samples_split':[2,5,10]}
+grid_RF = GridSearchCV(RandomForestRegressor(),param_grid,refit=True,verbose=0,cv=5)
+grid_RF.fit(X_train,y_train)
+
+print("Best parameters obtained by Grid Search:",grid_RF.best_params_)
+
+a=grid_RF.predict(X_test)
+rmse_rf=np.sqrt(np.mean((y_test-a)**2))
+print("RMSE for Random Forest:",rmse_rf)
+
+plt.xlabel("Actual area burned")
+plt.ylabel("Error")
+plt.grid(True)
+plt.scatter(10**(y_test),10**(a)-10**(y_test))
+
+plt.title("Histogram of prediction errors\n",fontsize=18)
+plt.xlabel("Prediction error ($)",fontsize=14)
+plt.grid(True)
+plt.hist(10**(a.reshape(a.size,))-10**(y_test),bins=50)
+
+rec_RF=[]
+for i in range(tol_max):
+    rec_RF.append(rec(a,y_test,i))
+
+plt.figure(figsize=(5,5))
+plt.title("REC curve for the Random Forest\n",fontsize=15)
+plt.xlabel("Absolute error (tolerance) in prediction ($)")
+plt.ylabel("Percentage of correct prediction")
+plt.xticks([i for i in range(0,tol_max+1,5)])
+plt.ylim(-10,100)
+plt.yticks([i*20 for i in range(6)])
+plt.grid(True)
+plt.plot(range(tol_max),rec_RF)'''
+
+
+
+#DecisionTreeRegressor
+"""from sklearn.tree import DecisionTreeRegressor
+
+tree_model = DecisionTreeRegressor(max_depth=10,criterion='mae')
+tree_model.fit(scaler.fit_transform(X_train),scaler.fit_transform(y_train))
+
+a=tree_model.predict(X_test)
+print("RMSE for Decision Tree:",np.sqrt(np.mean((y_test-a)**2)))
+
+plt.xlabel("Actual area burned")
+plt.ylabel("Error")
+plt.grid(True)
+plt.scatter(10**(y_test),10**(a)-10**(y_test))
+
+plt.title("Histogram of prediction errors\n",fontsize=18)
+plt.xlabel("Prediction error ($)",fontsize=14)
+plt.grid(True)
+plt.hist(10**(a.reshape(a.size,))-10**(y_test),bins=50)
+
+rec_DT=[]
+for i in range(tol_max):
+    rec_DT.append(rec(a,y_test,i))
+
+plt.figure(figsize=(5,5))
+plt.title("REC curve for the single Decision Tree\n",fontsize=15)
+plt.xlabel("Absolute error (tolerance) in prediction ($)")
+plt.ylabel("Percentage of correct prediction")
+plt.xticks([i for i in range(0,tol_max+1,5)])
+plt.ylim(-10,100)
+plt.yticks([i*20 for i in range(6)])
+plt.grid(True)
+plt.plot(range(tol_max),rec_DT)"""
+
+
+print('Porcentagem de previsão correta SVM\n',rec_SVR)
+
+#print('Porcentagem de previsão correta RF\n',rec_RF)
+
+#print('Porcentagem de previsão correta DT\n',rec_DT)
+

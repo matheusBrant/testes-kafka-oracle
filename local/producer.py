@@ -9,13 +9,19 @@ import time
 import random
 from random import randint
 
-df = pd.read_json('forest_fire.json')
+a='data/forest_fire.json'
+b='data/forest_fire2x.json'
+c='data/forest_fire4x.json'
+d='data/forest_fire8x.json'
+e='data/forest_fire32x.css'
+
+df = pd.read_json(a)
 print(df)
 js = df.to_json()
 obj = json.loads(js)
 
-with open('data.json', 'w', encoding='utf-8') as outfile:
-    json.dump(obj, outfile, ensure_ascii=False, indent=2)
+'''with open('obj.json', 'w', encoding='utf-8') as outfile:
+    json.dump(obj, outfile, ensure_ascii=False, indent=2)'''
 
 # Create an instance of the Kafka producer
 producer = KafkaProducer(bootstrap_servers='localhost:9092',
@@ -31,6 +37,6 @@ while True:
 # sudo docker-compose ps
 # -- create topic --
 # sudo docker-compose exec kafka \
-# kafka-topics --create --topic kafka-python-topic --partitions 1 --replication-factor 1 --bootstrap-server localhost:9092
+# kafka-topics --create --topic python-topic-1 --partitions 1 --replication-factor 1 --bootstrap-server localhost:9092
 """virtualenv -p python3 .env3
 source .env3/bin/activate"""
