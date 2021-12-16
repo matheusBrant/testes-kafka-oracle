@@ -9,6 +9,8 @@ consumer = KafkaConsumer(bootstrap_servers='localhost:9092',
 auto_offset_reset='latest', value_deserializer=lambda m: json.loads(m.decode('utf-8')))
 
 consumer.subscribe('python-topic-1')
+
+
 for message in consumer:
     message = message.value;
     #print('{}'.format(message))
@@ -16,7 +18,7 @@ for message in consumer:
     print(dataset_forestfire)
     break
 
-
+print('aqui')
 #dataset_forestfire = pd.read_json('./forest_fire.json')
 dataset_forestfire.head()
 

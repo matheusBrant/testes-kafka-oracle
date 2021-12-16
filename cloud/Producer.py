@@ -3,7 +3,7 @@ import certifi
   
 if __name__ == '__main__':  
   
-  topic = "fire-predict-pool"  
+  topic = "fire-predict"  
   conf = {  
     'bootstrap.servers': 'cell-1.streaming.sa-saopaulo-1.oci.oraclecloud.com:9092', #usually of the form cell-1.streaming.<region>.oci.oraclecloud.com:9092  
     'security.protocol': 'SASL_SSL',  
@@ -11,9 +11,9 @@ if __name__ == '__main__':
     'ssl.ca.location': certifi.where(),  # from step 6 of Prerequisites section
         # optionally instead of giving path as shown above, you can do 1. pip install certifi 2. import certifi and
         # 3. 'ssl.ca.location': certifi.where()
-
+    
     'sasl.mechanism': 'PLAIN',  
-    'sasl.username': 'matheusbrant/matheusbrantgo@gmail.com/ocid1.streampool.oc1.sa-saopaulo-1.amaaaaaaz2nkdgaatblh5dkumqibancjusgaghu24vhrec4yvhacwhrbixta',  # from step 2 of Prerequisites section
+    'sasl.username': 'matheusbrant/oracleidentitycloudservice/matheusbrantgo@gmail.com/ocid1.streampool.oc1.sa-saopaulo-1.amaaaaaaz2nkdgaatblh5dkumqibancjusgaghu24vhrec4yvhacwhrbixta',  # from step 2 of Prerequisites section
     'sasl.password': '2P0vj>Fxh4ghGe.KHD:p',  # from step 7 of Prerequisites section
    }  
   
@@ -34,13 +34,25 @@ def acked(err, msg):
         print("Produced record to topic {} partition [{}] @ offset {}".format(msg.topic(), msg.partition(), msg.offset()))  
 
 
-for n in range(10):  
-    record_key = "messageKey" + str(n)  
-    record_value = "messageValue" + str(n)  
-    print("Producing record: {}\t{}".format(record_key, record_value))  
-    producer.produce(topic, key=record_key, value=record_value, on_delivery=acked)  
-    # p.poll() serves delivery reports (on_delivery) from previous produce() calls.  
-    producer.poll(0)  
-
+for n in range(1):
+    from csv import reader
+    # skip first line i.e. read header first and then iterate over each row od csv as a list
+    with open('forest_fire.csv', 'r') as read_obj:
+        csv_reader = reader(read_obj)
+        header = next(csv_reader)
+        # Check file as empty
+        if header != None:
+            # Iterate over each row after the header in the csv
+            i=1
+            for row in csv_reader:
+                # row variable is a list that represents a row in csv
+                record_key = "messageKey " + str(i)
+                i=i+1  
+                record_value = "messageValue " + str(row)
+                print("Producing record: {}\t{}".format(record_key, record_value))  
+                producer.produce(topic, key=record_key, value=record_value, on_delivery=acked)  
+                # p.poll() serves delivery reports (on_delivery) from previous produce() calls.  
+                producer.poll(0) 
+     
 producer.flush()  
 print("{} messages were produced to topic {}!".format(delivered_records, topic))

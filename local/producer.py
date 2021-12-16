@@ -13,15 +13,29 @@ a='data/forest_fire.json'
 b='data/forest_fire2x.json'
 c='data/forest_fire4x.json'
 d='data/forest_fire8x.json'
-e='data/forest_fire32x.css'
+e='data/forest_fire32x.csv'
+f='data/forest_fire.csv'
 
-df = pd.read_json(a)
+#se for e troca pra csv
+df = pd.read_csv(f)
 print(df)
 js = df.to_json()
 obj = json.loads(js)
 
 '''with open('obj.json', 'w', encoding='utf-8') as outfile:
     json.dump(obj, outfile, ensure_ascii=False, indent=2)'''
+
+from csv import reader
+# skip first line i.e. read header first and then iterate over each row od csv as a list
+with open(f, 'r') as read_obj:
+    csv_reader = reader(read_obj)
+    header = next(csv_reader)
+    # Check file as empty
+    if header != None:
+        # Iterate over each row after the header in the csv
+        for row in csv_reader:
+            # row variable is a list that represents a row in csv
+            print(row)
 
 # Create an instance of the Kafka producer
 producer = KafkaProducer(bootstrap_servers='localhost:9092',
@@ -33,6 +47,7 @@ while True:
     producer.send('python-topic-1', js)
     time.sleep(10)
     print("BEEP BEEP")
+    
 # sudo docker-compose up -d
 # sudo docker-compose ps
 # -- create topic --
@@ -40,3 +55,4 @@ while True:
 # kafka-topics --create --topic python-topic-1 --partitions 1 --replication-factor 1 --bootstrap-server localhost:9092
 """virtualenv -p python3 .env3
 source .env3/bin/activate"""
+#cd Área\ de\ Trabalho/vsFiles/estudoKafka/cofluent-kafka-oracle/local/

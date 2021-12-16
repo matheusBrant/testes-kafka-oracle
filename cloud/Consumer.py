@@ -3,9 +3,9 @@ import certifi
 
 if __name__ == '__main__':
 
-  topic = "fire-predict-pool"  
+  topic = "fire-predict"  
   conf = {  
-    'group.id': 1,
+    'group.id': "fire-predict",
     'bootstrap.servers': 'cell-1.streaming.sa-saopaulo-1.oci.oraclecloud.com:9092', #usually of the form cell-1.streaming.<region>.oci.oraclecloud.com:9092  
     'security.protocol': 'SASL_SSL',  
   
@@ -14,7 +14,7 @@ if __name__ == '__main__':
      # 3. 'ssl.ca.location': certifi.where()
   
     'sasl.mechanism': 'PLAIN',  
-    'sasl.username': 'matheusbrant/matheusbrantgo@gmail.com/ocid1.streampool.oc1.sa-saopaulo-1.amaaaaaaz2nkdgaatblh5dkumqibancjusgaghu24vhrec4yvhacwhrbixta',  # from step 2 of Prerequisites section
+    'sasl.username': 'matheusbrant/oracleidentitycloudservice/matheusbrantgo@gmail.com/ocid1.streampool.oc1.sa-saopaulo-1.amaaaaaaz2nkdgaatblh5dkumqibancjusgaghu24vhrec4yvhacwhrbixta',  # from step 2 of Prerequisites section
     'sasl.password': '2P0vj>Fxh4ghGe.KHD:p',  # from step 7 of Prerequisites section
    }  
 
@@ -27,7 +27,8 @@ consumer.subscribe([topic])
 # Process messages
 try:
     while True:
-        msg = consumer.poll(1.0)
+        msg = consumer.poll(0)
+        print(msg)
         if msg is None:
             # No message available within timeout.
             # Initial message consumption may take up to
